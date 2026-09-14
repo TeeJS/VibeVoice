@@ -11,6 +11,19 @@ echo "  speakers= ${SPEAKER_NAMES}"
 echo "  output  = ${OUTPUT_DIR}"
 echo "  cfg     = ${CFG_SCALE}"
 
+# Merge any user-supplied voices (mounted folder) into the built-in set, no rebuild.
+# Name files like en-Bob_man.wav / en-Sue_woman.wav; reference by the name part.
+CUSTOM_VOICES_DIR="${CUSTOM_VOICES_DIR:-/app/voices}"
+if [ -d "${CUSTOM_VOICES_DIR}" ]; then
+  shopt -s nullglob
+  custom=( "${CUSTOM_VOICES_DIR}"/*.wav )
+  if [ ${#custom[@]} -gt 0 ]; then
+    echo "  custom  = ${#custom[@]} voice(s) from ${CUSTOM_VOICES_DIR}"
+    for f in "${custom[@]}"; do echo "    + $(basename "$f")"; cp -f "$f" demo/voices/; done
+  fi
+  shopt -u nullglob
+fi
+
 if [ ! -f "${INPUT_TXT}" ]; then
   echo "ERROR: input script not found at ${INPUT_TXT}" >&2
   echo "Put your 'Speaker 1:'-formatted .txt in the mapped input folder." >&2

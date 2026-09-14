@@ -25,6 +25,7 @@ ENV MODEL_PATH=vibevoice/VibeVoice-7B \
     INPUT_TXT=/app/input/coffee_crisis.txt \
     OUTPUT_DIR=/app/output \
     SPEAKER_NAMES="Alice Carter Frank Maya" \
-    CFG_SCALE=1.3
+    CFG_SCALE=1.3 \
+    CUSTOM_VOICES_DIR=/app/voices
 
 ENTRYPOINT ["/workspace/VibeVoice/docker/entrypoint.sh"]
