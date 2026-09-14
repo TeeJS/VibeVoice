@@ -16,7 +16,12 @@ COPY . /workspace/VibeVoice
 
 # Installs transformers==4.51.3, accelerate==1.6.0, etc. flash-attn is NOT pulled;
 # on CUDA the script requests flash_attention_2 and auto-falls back to SDPA.
-RUN pip install --no-cache-dir -e . && chmod +x docker/entrypoint.sh
+RUN pip install --no-cache-dir -e . && chmod +x docker/entrypoint.sh docker/gui-entrypoint.sh
+
+# GUI only: make the Gradio demo bind LAN (0.0.0.0) WITHOUT the public --share
+# tunnel, and honor --port. Touches gradio_demo.py only; the batch path is unaffected.
+RUN sed -i 's/# server_port=args.port,/server_port=args.port,/' demo/gradio_demo.py && \
+    sed -i 's/server_name="0.0.0.0" if args.share else "127.0.0.1",/server_name="0.0.0.0",/' demo/gradio_demo.py
 
 # Defaults -> all overridable as editable fields in the Unraid template.
 # Speaker 1->Alice (Dana), 2->Carter (Marcus), 3->Frank (Jerry), 4->Maya (Priya).
