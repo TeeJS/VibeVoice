@@ -32,10 +32,20 @@ fi
 
 mkdir -p "${OUTPUT_DIR}"
 
-# SPEAKER_NAMES is intentionally unquoted so it splits into separate args (nargs='+').
+# Optional fixed seed for reproducible output. Blank = random each run.
+SEED_ARG=""
+if [ -n "${SEED:-}" ]; then
+  SEED_ARG="--seed ${SEED}"
+  echo "  seed    = ${SEED}"
+else
+  echo "  seed    = (random)"
+fi
+
+# SPEAKER_NAMES / SEED_ARG intentionally unquoted so they split into separate args.
 exec python demo/inference_from_file.py \
   --model_path "${MODEL_PATH}" \
   --txt_path "${INPUT_TXT}" \
   --speaker_names ${SPEAKER_NAMES} \
   --output_dir "${OUTPUT_DIR}" \
-  --cfg_scale "${CFG_SCALE}"
+  --cfg_scale "${CFG_SCALE}" \
+  ${SEED_ARG}
